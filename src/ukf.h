@@ -6,9 +6,17 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include "tools.h"
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
+
+struct MesPredidctions {
+public:
+	MatrixXd  Zsig;
+	VectorXd  z_pred; 
+	MatrixXd  S;
+};
 
 class UKF {
 public:
@@ -67,6 +75,26 @@ public:
   ///* Sigma point spreading parameter
   double lambda_;
 
+  // Counter for the measurements
+  int mes_index;
+
+  // Counter for Radar NIS greater than 7.8
+  int nis_radar_less_95;
+
+  // Counter for Radar NIS less than 7.8
+  int nis_radar_greater_95;
+
+  // 7.8
+  double nis_radar_95;
+
+  // Counter for Lidar NIS less than 5.9
+  int nis_lidar_less_95;
+
+  // Counter for Lidar NIS greater than 5.9
+  int nis_lidar_greater_95;
+
+  // 5.9
+  double nis_lidar_95;
 
   /**
    * Constructor
@@ -89,19 +117,44 @@ public:
    * matrix
    * @param delta_t Time between k and k+1 in s
    */
-  void Prediction(double delta_t);
+  MatrixXd Prediction(double delta_t);
+
+  MatrixXd GenerateSigmaPoints();
+
+  MatrixXd PredictSigmaPoints(MatrixXd Xsig, double delta_t);
+
+  void PredictMeanAndCovariance(MatrixXd Xsig_pred);
+
+  void Update(MeasurementPackage meas_package, MatrixXd  Xsig_pred);
+
+  void DisplayNIS();
 
   /**
    * Updates the state and the state covariance matrix using a laser measurement
    * @param meas_package The measurement at k+1
    */
-  void UpdateLidar(MeasurementPackage meas_package);
+  void UpdateLidar(MeasurementPackage meas_package, MatrixXd  Xsig_pred);
+
+  MesPredidctions PredictLidarMeasurement(MeasurementPackage meas_package, MatrixXd  Xsig_pred);
+
+  void UpdateStateLidar(MeasurementPackage meas_package, MatrixXd  Xsig_pred, MesPredidctions predictions);
 
   /**
    * Updates the state and the state covariance matrix using a radar measurement
    * @param meas_package The measurement at k+1
    */
-  void UpdateRadar(MeasurementPackage meas_package);
+  void UpdateRadar(MeasurementPackage meas_package, MatrixXd  Xsig_pred);
+
+  MesPredidctions PredictRadarMeasurement(MeasurementPackage meas_package, MatrixXd  Xsig_pred);
+
+  void UpdateStateRadar(MeasurementPackage meas_package, MatrixXd  Xsig_pred, MesPredidctions predictions);
+
+  double ApplyTime(MeasurementPackage meas_package);
+
+  void InitWeights();
+
+private:
+	Tools tools;
 };
 
 #endif /* UKF_H */

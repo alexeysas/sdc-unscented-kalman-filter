@@ -2,7 +2,7 @@
 #include <iostream>
 #include "json.hpp"
 #include <math.h>
-#include "ukf.h"
+#include "FusionEKF.h"
 #include "tools.h"
 
 using namespace std;
@@ -31,14 +31,14 @@ int main()
   uWS::Hub h;
 
   // Create a Kalman Filter instance
-  UKF ukf;
+  FusionEKF fusionEKF;
 
   // used to compute the RMSE later
   Tools tools;
   vector<VectorXd> estimations;
   vector<VectorXd> ground_truth;
 
-  h.onMessage([&ukf,&tools,&estimations,&ground_truth](uWS::WebSocket<uWS::SERVER>* ws, char *data, size_t length, uWS::OpCode opCode) {
+  h.onMessage([&fusionEKF,&tools,&estimations,&ground_truth](uWS::WebSocket<uWS::SERVER>* ws, char *data, size_t length, uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
     // The 4 signifies a websocket message
     // The 2 signifies a websocket event
@@ -106,19 +106,16 @@ int main()
     	  ground_truth.push_back(gt_values);
           
           //Call ProcessMeasurment(meas_package) for Kalman filter
-    	  ukf.ProcessMeasurement(meas_package);    	  
+    	  fusionEKF.ProcessMeasurement(meas_package);    	  
 
     	  //Push the current estimated x,y positon from the Kalman filter's state vector
 
     	  VectorXd estimate(4);
 
-    	  double p_x = ukf.x_(0);
-    	  double p_y = ukf.x_(1);
-    	  double v  = ukf.x_(2);
-    	  double yaw = ukf.x_(3);
-
-    	  double v1 = cos(yaw)*v;
-    	  double v2 = sin(yaw)*v;
+    	  double p_x = fusionEKF.ekf_.x_(0);
+    	  double p_y = fusionEKF.ekf_.x_(1);
+    	  double v1  = fusionEKF.ekf_.x_(2);
+    	  double v2 = fusionEKF.ekf_.x_(3);
 
     	  estimate(0) = p_x;
     	  estimate(1) = p_y;
@@ -137,7 +134,7 @@ int main()
           msgJson["rmse_vx"] = RMSE(2);
           msgJson["rmse_vy"] = RMSE(3);
           auto msg = "42[\"estimate_marker\"," + msgJson.dump() + "]";
-          // std::cout << msg << std::endl;
+          //std::cout << msg << std::endl;
           ws->send(msg.data(), msg.length(), uWS::OpCode::TEXT);
 	  
         }
@@ -153,25 +150,24 @@ int main()
   // We don't need this since we're not using HTTP but if it's removed the program
   // doesn't compile :-(
   h.onHttpRequest([](uWS::HttpResponse *res, uWS::HttpRequest req, char *data, size_t, size_t) {
-    const std::string s = "<h1>Hello world!</h1>";
-    if (req.getUrl().valueLength == 1)
-    {
-      res->end(s.data(), s.length());
-    }
-    else
-    {
-      // i guess this should be done more gracefully?
-      res->end(nullptr, 0);
-    }
+      const std::string s = "<h1>Hello world!</h1>";
+      if (req.getUrl().valueLength == 1)
+      {
+          res->end(s.data(), s.length());
+      } else
+      {
+          // i guess this should be done more gracefully?
+          res->end(nullptr, 0);
+      }
   });
 
   h.onConnection([&h](uWS::WebSocket<uWS::SERVER>* ws, uWS::HttpRequest req) {
-    std::cout << "Connected!!!" << std::endl;
+      std::cout << "Connected!!!" << std::endl;
   });
 
   h.onDisconnection([&h](uWS::WebSocket<uWS::SERVER>* ws, int code, char *message, size_t length) {
-    ws->close();
-    std::cout << "Disconnected" << std::endl;
+      ws->close();
+      std::cout << "Disconnected" << std::endl;
   });
 
   int port = 4567;
@@ -187,90 +183,3 @@ int main()
   }
   h.run();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

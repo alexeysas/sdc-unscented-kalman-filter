@@ -1,0 +1,2 @@
+#TargetFrameworkVersion=v4.0:PlatformToolSet=v140:EnableManagedIncrementalBuild=false:VCToolArchitecture=Native32Bit:WindowsTargetPlatformVersion=10.0.15063.0
+Debug|Win32|E:\src\Courses\SDC_projects\sdc-unscented-kalman-filter\products\cmake.msbuild.windows.x86.v140\CMakeFiles\3.10.0\CompilerIdCXX\|

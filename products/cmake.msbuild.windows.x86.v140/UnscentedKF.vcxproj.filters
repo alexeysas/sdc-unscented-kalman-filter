@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="E:\src\Courses\SDC_projects\sdc-unscented-kalman-filter\src\ukf.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\src\Courses\SDC_projects\sdc-unscented-kalman-filter\src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\src\Courses\SDC_projects\sdc-unscented-kalman-filter\src\tools.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="E:\src\Courses\SDC_projects\sdc-unscented-kalman-filter\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{C0F59901-6065-3B56-97D8-8C6AA7815739}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

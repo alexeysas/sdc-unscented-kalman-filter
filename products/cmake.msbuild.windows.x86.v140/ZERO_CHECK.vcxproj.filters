@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="E:\src\Courses\SDC_projects\sdc-unscented-kalman-filter\products\cmake.msbuild.windows.x86.v140\CMakeFiles\837935d462b66db1248cb629b7f90d1a\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{7D8BD84B-CE34-3535-83A9-734F2B551575}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
